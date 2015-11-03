@@ -1,0 +1,19 @@
+#!/bin/bash
+
+command=$1
+shift
+args=$@
+
+echo "command: $command"
+echo "args: $args"
+
+if [ ! -d "mocks" ]; then
+    mkdir mocks
+fi
+
+stdout=$("${command} ${args}")
+exitcode=$?
+
+echo $stdout
+exit $exitcode
+
