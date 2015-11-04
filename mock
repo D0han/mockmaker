@@ -14,18 +14,30 @@ fi
 stdout=$(${command} ${args})
 exitcode=$?
 
-echo $stdout
+echo "$stdout"
 echo "exit code: $exitcode"
 
-funame=f_$(echo -n "${args}" | md5sum | cut -d" " -f1)
-cat << EOF >> mocks/${command}
+funame=p_$(echo -n "${args}" | md5sum | cut -d" " -f1)
+
+if [ ! -e mocks/${command} ]; then
+    cat << EOF > mocks/${command}
+funame=p_\$(echo -n "\$@" | md5sum | cut -d" " -f1)
+\$funame
+EOF
+fi
+
+mv mocks/${command} mocks/${command}_tmp
+
+cat << EOF > mocks/${command}
+# For param: ${args}
 function ${funame} {
     echo "${stdout}"
     exit ${exitcode}
 }
 
-funame=f_\$(echo -n "\$@" | md5sum | cut -d" " -f1)
-\$funame
 EOF
+
+cat mocks/${command}_tmp >> mocks/${command}
+rm mocks/${command}_tmp
 
 chmod +x mocks/${command}
