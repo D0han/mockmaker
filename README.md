@@ -1,4 +1,6 @@
 # mockmaker
+[![Build Status](https://travis-ci.org/D0han/mockmaker.svg?branch=master)](https://travis-ci.org/D0han/mockmaker)
+
 ## How to use:
 Run script with desired command as parameter.
 Repeat for as many parameters as you need.
