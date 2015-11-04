@@ -1,0 +1,6 @@
+language: bash
+
+script:
+    - cd tests/
+    - bash run_tests.sh
+
