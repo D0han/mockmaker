@@ -4,15 +4,14 @@ command=$1
 shift
 args=$@
 
-echo "command: $command"
-echo "args: $args"
-
 if [ ! -d "mocks" ]; then
     mkdir mocks
 fi
 
-stdout=$(${command} ${args})
+stdout=$(${command} ${args} 2> mocks/stderr_tmp)
 exitcode=$?
+stderr=$(cat mocks/stderr_tmp)
+rm mocks/stderr_tmp
 
 echo "$stdout"
 echo "exit code: $exitcode"
@@ -32,6 +31,7 @@ cat << EOF > mocks/${command}
 # For param: ${args}
 function ${funame} {
     echo "${stdout}"
+    >&2 echo "${stderr}"
     exit ${exitcode}
 }
 
