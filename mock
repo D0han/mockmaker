@@ -9,6 +9,11 @@ command=$1
 shift
 args=$@
 
+if ! type "${command}" &> /dev/null; then
+    >&2 echo "I cannot run ${command} ;("
+    exit 1
+fi
+
 if [ ! -d "mocks" ]; then
     mkdir mocks
 fi
