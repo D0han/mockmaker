@@ -38,9 +38,8 @@ if [ -n "${stdout}" ]; then
 fi
 if [ -n "${stderr}" ]; then
     echos+="
-    echo \"${stderr}\""
+    >&2 echo \"${stderr}\""
 fi
-
 
 # Create new function for current args
 cat << EOF > mocks/${command}
