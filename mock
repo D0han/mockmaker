@@ -31,7 +31,7 @@ EOF
 else
     grep "${funame}" mocks/${command} 2>&1 > /dev/null
     if [ $? -ne 1 ]; then
-        >&2 echo "${command} is mocked already"
+        >&2 echo "${command} ${args} is mocked already"
         exit 3
     fi
 fi
