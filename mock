@@ -19,6 +19,7 @@ echo "exit code: $exitcode"
 
 funame=p_$(echo -n "${args}" | md5sum | cut -d" " -f1)
 
+# Create ending part of file with function call
 if [ ! -e mocks/${command} ]; then
     cat << EOF > mocks/${command}
 
@@ -30,6 +31,7 @@ fi
 
 mv mocks/${command} mocks/${command}_tmp
 
+# Create new function for current args
 cat << EOF > mocks/${command}
 #!/bin/bash
 
@@ -41,6 +43,7 @@ function ${funame} {
 }
 EOF
 
+# Add old file below new function (but ommit first line, as that should be shebang)
 tail --lines=+2 mocks/${command}_tmp >> mocks/${command}
 rm mocks/${command}_tmp
 
