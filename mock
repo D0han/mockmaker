@@ -11,7 +11,7 @@ args=$@
 
 if ! type "${command}" 2>&1 > /dev/null; then
     >&2 echo "I cannot run ${command} ;("
-    exit 1
+    exit 2
 fi
 
 if [ ! -d "mocks" ]; then
@@ -32,7 +32,7 @@ else
     grep "${funame}" mocks/${command} 2>&1 > /dev/null
     if [ $? -ne 1 ]; then
         >&2 echo "${command} is mocked already"
-        exit 1
+        exit 3
     fi
 fi
 
