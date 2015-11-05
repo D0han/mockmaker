@@ -9,7 +9,7 @@ command=$1
 shift
 args=$@
 
-if ! type "${command}" &> /dev/null; then
+if ! type "${command}" 2>&1 > /dev/null; then
     >&2 echo "I cannot run ${command} ;("
     exit 1
 fi
@@ -17,15 +17,6 @@ fi
 if [ ! -d "mocks" ]; then
     mkdir mocks
 fi
-
-stdout=$(${command} ${args} 2> mocks/stderr_tmp)
-exitcode=$?
-stderr=$(cat mocks/stderr_tmp)
-rm mocks/stderr_tmp
-
-echo "stdout: $stdout"
-echo "stderr: $stderr"
-echo "exit code: $exitcode"
 
 funame=p_$(echo -n "${args}" | md5sum | cut -d" " -f1)
 
@@ -37,7 +28,22 @@ if [ ! -e mocks/${command} ]; then
 funame=p_\$(echo -n "\$@" | md5sum | cut -d" " -f1)
 \$funame
 EOF
+else
+    grep "${funame}" mocks/${command} 2>&1 > /dev/null
+    if [ $? -ne 1 ]; then
+        >&2 echo "${command} is mocked already"
+        exit 1
+    fi
 fi
+
+stdout=$(${command} ${args} 2> mocks/stderr_${funame}_tmp)
+exitcode=$?
+stderr=$(cat mocks/stderr_${funame}_tmp)
+rm mocks/stderr_${funame}_tmp
+
+echo "stdout: $stdout"
+echo "stderr: $stderr"
+echo "exit code: $exitcode"
 
 mv mocks/${command} mocks/${command}_tmp
 
