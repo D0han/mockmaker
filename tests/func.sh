@@ -9,7 +9,7 @@ check_outputs () {
     echo "$?" > orig_${hashed}_exitcode.txt
 
     cd ..
-    ./mock ${command} 2>&1 > /dev/null
+    ./mock ${command} > /dev/null 2>&1
 
     cd mocks
     ./${command} > ../tests/mock_${hashed}_stdout.txt 2> ../tests/mock_${hashed}_stderr.txt
