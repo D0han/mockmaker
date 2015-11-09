@@ -26,6 +26,7 @@ if [ ! -e mocks/${command_file} ]; then
     cat << EOF > mocks/${command_file}
 
 
+# For command: ${command_file}
 funame=p_\$(echo -n "\$@" | md5sum | cut -d" " -f1)
 if ! type "\${funame}" > /dev/null 2>&1; then
     >&2 echo "ERROR: \$0 \$@ is not mocked"
