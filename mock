@@ -8,6 +8,7 @@ fi
 command=$1
 shift
 args=$@
+command_file=$(basename ${command})
 
 if ! type "${command}" 2>&1 > /dev/null; then
     >&2 echo "I cannot run ${command} ;("
@@ -21,8 +22,8 @@ fi
 funame=p_$(echo -n "${args}" | md5sum | cut -d" " -f1)
 
 # Create ending part of file with function call
-if [ ! -e mocks/${command} ]; then
-    cat << EOF > mocks/${command}
+if [ ! -e mocks/${command_file} ]; then
+    cat << EOF > mocks/${command_file}
 
 
 funame=p_\$(echo -n "\$@" | md5sum | cut -d" " -f1)
@@ -33,7 +34,7 @@ fi
 \$funame
 EOF
 else
-    grep "${funame}" mocks/${command} 2>&1 > /dev/null
+    grep "${funame}" mocks/${command_file} 2>&1 > /dev/null
     if [ $? -ne 1 ]; then
         >&2 echo "${command} ${args} is mocked already"
         exit 3
@@ -49,7 +50,7 @@ echo "stdout: $stdout"
 echo "stderr: $stderr"
 echo "exit code: $exitcode"
 
-mv mocks/${command} mocks/${command}_tmp
+mv mocks/${command_file} mocks/${command_file}_tmp
 
 echos=""
 if [ -n "${stdout}" ]; then
@@ -62,7 +63,7 @@ if [ -n "${stderr}" ]; then
 fi
 
 # Create new function for current args
-cat << EOF > mocks/${command}
+cat << EOF > mocks/${command_file}
 #!/bin/bash
 
 # For param: ${args}
@@ -72,7 +73,7 @@ function ${funame} {${echos}
 EOF
 
 # Add old file below new function (but ommit first line, as that should be shebang)
-tail --lines=+2 mocks/${command}_tmp >> mocks/${command}
-rm mocks/${command}_tmp
+tail --lines=+2 mocks/${command_file}_tmp >> mocks/${command_file}
+rm mocks/${command_file}_tmp
 
-chmod +x mocks/${command}
+chmod +x mocks/${command_file}
