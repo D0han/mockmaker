@@ -8,13 +8,12 @@ check_outputs () {
     ${command} > orig_${hashed}_stdout.txt 2> orig_${hashed}_stderr.txt
     echo "$?" > orig_${hashed}_exitcode.txt
 
-    cd ..
     ./mock ${command} > /dev/null 2>&1
 
     cd mocks
-    ./${command} > ../tests/mock_${hashed}_stdout.txt 2> ../tests/mock_${hashed}_stderr.txt
-    echo "$?" > ../tests/mock_${hashed}_exitcode.txt
-    cd ../tests
+    ./${command} > ../mock_${hashed}_stdout.txt 2> ../mock_${hashed}_stderr.txt
+    echo "$?" > ../mock_${hashed}_exitcode.txt
+    cd ..
 
     local outcome=0
 

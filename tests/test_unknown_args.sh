@@ -5,7 +5,6 @@ command_check="git aaaaaaaa"
 
 outcome=0
 
-cd ..
 ./mock ${command} > /dev/null 2>&1
 cd mocks
 ./${command_check} > test_unknown_args_stdout.txt 2> test_unknown_args_stderr.txt
