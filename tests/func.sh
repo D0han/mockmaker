@@ -8,7 +8,7 @@ check_outputs () {
     ${command} > orig_${hashed}_stdout.txt 2> orig_${hashed}_stderr.txt
     echo "$?" > orig_${hashed}_exitcode.txt
 
-    ./mock ${command} > /dev/null 2>&1
+    ./mockmaker ${command} > /dev/null 2>&1
 
     cd mocks
     ./${command} > ../mock_${hashed}_stdout.txt 2> ../mock_${hashed}_stderr.txt

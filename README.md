@@ -7,10 +7,10 @@ Repeat for as many parameters as you need.
 
 ### Example:
 ```shell
-./mock git version
-./mock git --help
-./mock git thiswillfail
-./mock svn --version
+./mockmaker git version
+./mockmaker git --help
+./mockmaker git thiswillfail
+./mockmaker svn --version
 ```
 
 ## Outcome:
@@ -22,3 +22,4 @@ This file can be run with given earlier parameters and output same stdout, stder
 mocks/git
 mocks/svn
 ```
+
