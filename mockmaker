@@ -7,10 +7,10 @@ fi
 
 command=$1
 shift
-args=$@
+args=( "$@" )
 command_file=$(basename ${command})
 
-if ! type "${command}" 2>&1 > /dev/null; then
+if ! type "${command}" > /dev/null 2>&1 ; then
     >&2 echo "I cannot run ${command} ;("
     exit 2
 fi
@@ -35,7 +35,7 @@ fi
 \$funame
 EOF
 else
-    grep "${funame}" mocks/${command_file} 2>&1 > /dev/null
+    grep "${funame}" mocks/${command_file} > /dev/null 2>&1 
     if [ $? -ne 1 ]; then
         >&2 echo "${command} ${args} is mocked already"
         exit 3
