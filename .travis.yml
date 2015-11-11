@@ -1,6 +1,14 @@
 language: bash
 
+addons:
+  apt:
+    sources:
+    - debian-sid
+    packages:
+    - shellcheck
+
 script:
     - cd tests/
     - bash run_tests.sh
-
+    - shellcheck ../mockmaker
+    - shellcheck mocks/*
