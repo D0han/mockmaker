@@ -1,8 +1,10 @@
 #!/bin/bash
 
 check_outputs () {
-    command=( "$@" )
-    hashed=$(echo -n "${command[@]}" | md5sum | cut -d" " -f1)
+    local command
+    readonly command=( "$@" )
+    local hashed
+    readonly hashed=$(echo -n "${command[@]}" | md5sum | cut -d" " -f1)
 
     # shellcheck disable=SC2068
     ${command[@]} > "orig_${hashed}_stdout.txt" 2> "orig_${hashed}_stderr.txt"
