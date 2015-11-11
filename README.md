@@ -23,3 +23,6 @@ mocks/git
 mocks/svn
 ```
 
+### Contributors:
+* D0han
+* brand0m
