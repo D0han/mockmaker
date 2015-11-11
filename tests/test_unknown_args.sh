@@ -5,7 +5,7 @@ command_check="git aaaaaaaa"
 
 outcome=0
 
-./mockmaker ${command} > /dev/null 2>&1
+./mockmaker "${command}" > /dev/null 2>&1
 cd mocks
 ./${command_check} > test_unknown_args_stdout.txt 2> test_unknown_args_stderr.txt
 if [ $? -ne 1 ]; then
