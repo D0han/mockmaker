@@ -12,3 +12,4 @@ script:
     - bash run_tests.sh
     - shellcheck ../mockmaker
     - shellcheck mocks/*
+    - shellcheck *.sh
