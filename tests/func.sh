@@ -4,12 +4,15 @@ check_outputs () {
     command=( "$@" )
     hashed=$(echo -n "${command[@]}" | md5sum | cut -d" " -f1)
 
+    # shellcheck disable=SC2068
     ${command[@]} > "orig_${hashed}_stdout.txt" 2> "orig_${hashed}_stderr.txt"
     echo "$?" > "orig_${hashed}_exitcode.txt"
 
+    # shellcheck disable=SC2068
     ./mockmaker ${command[@]} > /dev/null 2>&1
 
     cd mocks || exit 1
+    # shellcheck disable=SC2086
     ./${command[*]} > "../mock_${hashed}_stdout.txt" 2> "../mock_${hashed}_stderr.txt"
     echo "$?" > "../mock_${hashed}_exitcode.txt"
     cd ..
