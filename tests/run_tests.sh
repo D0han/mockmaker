@@ -3,6 +3,7 @@
 run_tests () {
     outcome_tmp=0
 
+    # shellcheck disable=SC2048
     for f in $*; do
         echo "Running ${f} test suite"
         "./${f}"
@@ -27,6 +28,5 @@ if [ "$1" != "--skip-shellcheck" ]; then
 else
     echo "Skipping shellcheck..."
 fi
-
 
 exit $outcome
