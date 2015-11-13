@@ -1,5 +1,18 @@
 #!/bin/bash
 
+compare_values () {
+    local hashed
+    readonly hashed=$1
+    local out_type
+    readonly out_type=$2
+    echo "Checking ${out_type}.."
+    diff "orig_${hashed}_${out_type}.txt" "mock_${hashed}_${out_type}.txt"
+    if [ $? -ne 0 ]; then
+        echo "FAIL: ${out_type}s differ"
+        outcome=1
+    fi
+}
+
 check_outputs () {
     local command
     readonly command=( "$@" )
@@ -21,26 +34,9 @@ check_outputs () {
 
     local outcome=0
 
-    echo "Checking stdout.."
-    diff "orig_${hashed}_stdout.txt" "mock_${hashed}_stdout.txt"
-    if [ $? -ne 0 ]; then
-        echo "FAIL: stdouts differ"
-        outcome=1
-    fi
-
-    echo "Checking stderr.."
-    diff "orig_${hashed}_stderr.txt" "mock_${hashed}_stderr.txt"
-    if [ $? -ne 0 ]; then
-        echo "FAIL: stderrs differ"
-        outcome=1
-    fi
-
-    echo "Checking exit code.."
-    diff "orig_${hashed}_exitcode.txt" "mock_${hashed}_exitcode.txt"
-    if [ $? -ne 0 ]; then
-        echo "FAIL: exitcodes differ"
-        outcome=1
-    fi
+    compare_values ${hashed} "stdout"
+    compare_values ${hashed} "stderr"
+    compare_values ${hashed} "exitcode"
 
     rm "orig_${hashed}_stdout.txt"
     rm "orig_${hashed}_stderr.txt"
