@@ -10,6 +10,4 @@ addons:
 script:
     - cd tests/
     - bash run_tests.sh
-    - shellcheck ../mockmaker
-    - shellcheck mocks/*
-    - shellcheck *.sh
+
