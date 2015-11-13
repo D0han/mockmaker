@@ -24,7 +24,7 @@ let outcome+=$?
 if [ "$1" != "--skip-shellcheck" ]; then
     run_tests "shellcheck_test_*.sh"
     let outcome+=$?
-    echo "Ypu can skip shellcheck tests with --skip-shellcheck"
+    echo "You can skip shellcheck tests with --skip-shellcheck"
 else
     echo "Skipping shellcheck..."
 fi
