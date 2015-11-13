@@ -34,9 +34,9 @@ check_outputs () {
 
     local outcome=0
 
-    compare_values ${hashed} "stdout"
-    compare_values ${hashed} "stderr"
-    compare_values ${hashed} "exitcode"
+    compare_values "${hashed}" "stdout"
+    compare_values "${hashed}" "stderr"
+    compare_values "${hashed}" "exitcode"
 
     rm "orig_${hashed}_stdout.txt"
     rm "orig_${hashed}_stderr.txt"

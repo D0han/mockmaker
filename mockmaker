@@ -28,6 +28,7 @@ if [ ! -e "mocks/${command_file}" ]; then
     cat << EOF > mocks/${command_file}
 
 
+# shellcheck disable=SC2034
 MOCKMAKER_VERSION=${VERSION}
 
 # For command: ${command_file}
