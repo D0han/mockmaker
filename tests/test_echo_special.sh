@@ -1,7 +1,6 @@
 #!/bin/bash
 
-command='echo "\"a\$PWD\\"'
-commmand="${command}\'"
+command="echo \"\"a\$PWD\\\'\""
 
 source ./func.sh
 check_outputs "$command"
