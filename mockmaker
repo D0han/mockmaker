@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION=0.9
+VERSION=1.0
 
 if [ $# -lt 1 ]; then
     >&2 echo "You need to provide command to mock!"
