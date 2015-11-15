@@ -49,6 +49,9 @@ fi
 
 stdout=$(${command} "${args[@]}" 2> "mocks/stderr_${funame}_tmp")
 exitcode=$?
+stdout=${stdout//\\/\\\\}
+stdout=${stdout//\"/\\\"}
+stdout=${stdout//\$/\\\$}
 stderr=$(cat "mocks/stderr_${funame}_tmp")
 rm "mocks/stderr_${funame}_tmp"
 
@@ -83,4 +86,3 @@ tail --lines=+2 "mocks/${command_file}_tmp" >> "mocks/${command_file}"
 rm "mocks/${command_file}_tmp"
 
 chmod +x "mocks/${command_file}"
-
