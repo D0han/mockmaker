@@ -53,12 +53,19 @@ else
     fi
 fi
 
+function cleanup () {
+    cleaned=$1
+    cleaned=${cleaned//\\/\\\\}
+    cleaned=${cleaned//\"/\\\"}
+    cleaned=${cleaned//\$/\\\$}
+    echo "${cleaned}"
+}
+
 stdout=$(${command} "${args[@]}" 2> "/tmp/mockmaker_stderr_${funame}_tmp")
 exitcode=$?
-stdout=${stdout//\\/\\\\}
-stdout=${stdout//\"/\\\"}
-stdout=${stdout//\$/\\\$}
+stdout=$(cleanup "$stdout")
 stderr=$(cat "/tmp/mockmaker_stderr_${funame}_tmp")
+stderr=$(cleanup "$stderr")
 rm "/tmp/mockmaker_stderr_${funame}_tmp"
 
 echo "stdout: $stdout"
