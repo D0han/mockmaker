@@ -26,10 +26,14 @@ funame=p_$(echo -n "${args[@]}" | md5sum | cut -d" " -f1)
 # Create ending part of file with function call
 if [ ! -e "mocks/${command_file}" ]; then
     cat << EOF > mocks/${command_file}
+#!/bin/bash
 
+#### CONFIG SECTION ####
 
 # shellcheck disable=SC2034
 MOCKMAKER_VERSION=${VERSION}
+
+#### END OF CONFIG SECTION ####
 
 # For command: ${command_file}
 funame=p_\$(echo -n "\$@" | md5sum | cut -d" " -f1)
@@ -59,7 +63,7 @@ echo "stdout: $stdout"
 echo "stderr: $stderr"
 echo "exit code: $exitcode"
 
-mv "mocks/${command_file}" "mocks/${command_file}_tmp"
+mv "mocks/${command_file}" "mocks/${command_file}_old"
 
 echos=""
 if [ -n "${stdout}" ]; then
@@ -72,8 +76,7 @@ if [ -n "${stderr}" ]; then
 fi
 
 # Create new function for current args
-cat << EOF > mocks/${command_file}
-#!/bin/bash
+cat << EOF > mocks/${command_file}_func
 
 # For param: ${args[@]}
 function ${funame} {${echos}
@@ -81,8 +84,12 @@ function ${funame} {${echos}
 }
 EOF
 
-# Add old file below new function (but ommit first line, as that should be shebang)
-tail --lines=+2 "mocks/${command_file}_tmp" >> "mocks/${command_file}"
-rm "mocks/${command_file}_tmp"
+# put head (from start to end of config), new function and rest of script together
+config_end=$(grep -n -m 1 "#### END OF CONFIG SECTION ####" "mocks/${command_file}_old" | cut -d":" -f1)
+head -n $config_end "mocks/${command_file}_old" > "mocks/${command_file}"
+cat "mocks/${command_file}_func" >> "mocks/${command_file}"
+let config_end+=1
+tail -n+${config_end} "mocks/${command_file}_old" >> "mocks/${command_file}"
+rm "mocks/${command_file}_old" "mocks/${command_file}_func"
 
 chmod +x "mocks/${command_file}"
