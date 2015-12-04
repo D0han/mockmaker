@@ -2,8 +2,9 @@ sudo: required
 dist: trusty
 
 before_install:
-    - sudo deb http://archive.ubuntu.com/ubuntu/ trusty-backports restricted main universe
-    - sudo apt-get install shellcheck
+    - echo "deb http://archive.ubuntu.com/ubuntu/ trusty-backports restricted main universe" | sudo tee -a /etc/apt/sources.list
+    - sudo apt-get update -q
+    - sudo apt-get install shellcheck -y
 
 script:
     - cd tests/
