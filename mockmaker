@@ -95,7 +95,7 @@ EOF
 
 # put head (from start to end of config), new function and rest of script together
 config_end=$(grep -n -m 1 "#### END OF CONFIG SECTION ####" "/tmp/mockmaker_${command_file}_old" | cut -d":" -f1)
-head -n $config_end "/tmp/mockmaker_${command_file}_old" > "${MOCKS_DIR}/${command_file}"
+head -n "$config_end" "/tmp/mockmaker_${command_file}_old" > "${MOCKS_DIR}/${command_file}"
 cat "/tmp/mockmaker_${command_file}_func" >> "${MOCKS_DIR}/${command_file}"
 let config_end+=1
 tail -n+${config_end} "/tmp/mockmaker_${command_file}_old" >> "${MOCKS_DIR}/${command_file}"
