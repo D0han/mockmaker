@@ -1,11 +1,9 @@
-language: bash
+sudo: required
+dist: trusty
 
-addons:
-  apt:
-    sources:
-    - debian-sid
-    packages:
-    - shellcheck
+before_install:
+    - sudo deb http://archive.ubuntu.com/ubuntu/ trusty-backports restricted main universe
+    - sudo apt-get install shellcheck
 
 script:
     - cd tests/
