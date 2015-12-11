@@ -1,6 +1,13 @@
 #!/bin/bash
 
-VERSION=1.0
+VERSION=2.0
+
+MOCKS_DIR="mocks"
+
+# Source .mockmaker file for custom config if it exists
+if [ -e ".mockmaker" ]; then
+    . .mockmaker
+fi
 
 if [ $# -lt 1 ]; then
     >&2 echo "You need to provide command to mock!"
@@ -17,19 +24,23 @@ if ! type "${command}" > /dev/null 2>&1 ; then
     exit 2
 fi
 
-if [ ! -d "mocks" ]; then
-    mkdir mocks
+if [ ! -d "${MOCKS_DIR}" ]; then
+    mkdir ${MOCKS_DIR}
 fi
 
 funame=p_$(echo -n "${args[@]}" | md5sum | cut -d" " -f1)
 
 # Create ending part of file with function call
-if [ ! -e "mocks/${command_file}" ]; then
-    cat << EOF > mocks/${command_file}
+if [ ! -e "${MOCKS_DIR}/${command_file}" ]; then
+    cat << EOF > ${MOCKS_DIR}/${command_file}
+#!/bin/bash
 
+#### CONFIG SECTION ####
 
 # shellcheck disable=SC2034
 MOCKMAKER_VERSION=${VERSION}
+
+#### END OF CONFIG SECTION ####
 
 # For command: ${command_file}
 funame=p_\$(echo -n "\$@" | md5sum | cut -d" " -f1)
@@ -40,7 +51,7 @@ fi
 \$funame
 EOF
 else
-    grep "${funame}" "mocks/${command_file}" > /dev/null 2>&1
+    grep "${funame}" "${MOCKS_DIR}/${command_file}" > /dev/null 2>&1
     if [ $? -ne 1 ]; then
         >&2 echo "${command} ${args[*]} is mocked already"
         exit 3
@@ -55,18 +66,18 @@ function cleanup () {
     echo "${cleaned}"
 }
 
-stdout=$(${command} "${args[@]}" 2> "mocks/stderr_${funame}_tmp")
+stdout=$(${command} "${args[@]}" 2> "/tmp/mockmaker_stderr_${funame}_tmp")
 exitcode=$?
 stdout=$(cleanup "$stdout")
-stderr=$(cat "mocks/stderr_${funame}_tmp")
+stderr=$(cat "/tmp/mockmaker_stderr_${funame}_tmp")
 stderr=$(cleanup "$stderr")
-rm "mocks/stderr_${funame}_tmp"
+rm "/tmp/mockmaker_stderr_${funame}_tmp"
 
 echo "stdout: $stdout"
 echo "stderr: $stderr"
 echo "exit code: $exitcode"
 
-mv "mocks/${command_file}" "mocks/${command_file}_tmp"
+mv "${MOCKS_DIR}/${command_file}" "/tmp/mockmaker_${command_file}_old"
 
 echos=""
 if [ -n "${stdout}" ]; then
@@ -79,8 +90,7 @@ if [ -n "${stderr}" ]; then
 fi
 
 # Create new function for current args
-cat << EOF > mocks/${command_file}
-#!/bin/bash
+cat << EOF > /tmp/mockmaker_${command_file}_func
 
 # For param: ${args[@]}
 function ${funame} {${echos}
@@ -88,8 +98,12 @@ function ${funame} {${echos}
 }
 EOF
 
-# Add old file below new function (but ommit first line, as that should be shebang)
-tail --lines=+2 "mocks/${command_file}_tmp" >> "mocks/${command_file}"
-rm "mocks/${command_file}_tmp"
+# put head (from start to end of config), new function and rest of script together
+config_end=$(grep -n -m 1 "#### END OF CONFIG SECTION ####" "/tmp/mockmaker_${command_file}_old" | cut -d":" -f1)
+head -n "$config_end" "/tmp/mockmaker_${command_file}_old" > "${MOCKS_DIR}/${command_file}"
+cat "/tmp/mockmaker_${command_file}_func" >> "${MOCKS_DIR}/${command_file}"
+let config_end+=1
+tail -n+${config_end} "/tmp/mockmaker_${command_file}_old" >> "${MOCKS_DIR}/${command_file}"
+rm "/tmp/mockmaker_${command_file}_old" "/tmp/mockmaker_${command_file}_func"
 
-chmod +x "mocks/${command_file}"
+chmod +x "${MOCKS_DIR}/${command_file}"
