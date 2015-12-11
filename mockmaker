@@ -4,6 +4,11 @@ VERSION=2.0
 
 MOCKS_DIR="mocks"
 
+# Source .mockmaker file for custom config if it exists
+if [ -e ".mockmaker" ]; then
+    . .mockmaker
+fi
+
 if [ $# -lt 1 ]; then
     >&2 echo "You need to provide command to mock!"
     exit 1
