@@ -6,6 +6,7 @@ MOCKS_DIR="mocks"
 
 # Source .mockmaker file for custom config if it exists
 if [ -e ".mockmaker" ]; then
+    # shellcheck disable=SC1091
     . .mockmaker
 fi
 
