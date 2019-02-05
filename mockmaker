@@ -93,7 +93,9 @@ fi
 # Create new function for current args
 cat << EOF > /tmp/mockmaker_${command_file}_func
 
-# For param: ${args[@]}
+:<<'FOR_PARAMETERS'
+${args[@]}
+FOR_PARAMETERS
 function ${funame} {${echos}
     exit ${exitcode}
 }
