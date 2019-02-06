@@ -6,8 +6,7 @@ compare_values () {
     local out_type
     readonly out_type=$2
     echo "Checking ${out_type}.."
-    diff "orig_${hashed}_${out_type}.txt" "mock_${hashed}_${out_type}.txt"
-    if [ $? -ne 0 ]; then
+    if ! diff "orig_${hashed}_${out_type}.txt" "mock_${hashed}_${out_type}.txt"; then
         echo "FAIL: ${out_type}s differ"
         outcome=1
     fi

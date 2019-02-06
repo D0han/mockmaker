@@ -33,7 +33,7 @@ funame=p_$(echo -n "${args[@]}" | md5sum | cut -d" " -f1)
 
 # Create ending part of file with function call
 if [ ! -e "${MOCKS_DIR}/${command_file}" ]; then
-    cat << EOF > ${MOCKS_DIR}/${command_file}
+    cat << EOF > "${MOCKS_DIR}/${command_file}"
 #!/bin/bash
 
 #### CONFIG SECTION ####
@@ -91,7 +91,7 @@ if [ -n "${stderr}" ]; then
 fi
 
 # Create new function for current args
-cat << EOF > /tmp/mockmaker_${command_file}_func
+cat << EOF > "/tmp/mockmaker_${command_file}_func"
 
 :<<'FOR_PARAMETERS'
 ${args[@]}
@@ -105,7 +105,7 @@ EOF
 config_end=$(grep -n -m 1 "#### END OF CONFIG SECTION ####" "/tmp/mockmaker_${command_file}_old" | cut -d":" -f1)
 head -n "$config_end" "/tmp/mockmaker_${command_file}_old" > "${MOCKS_DIR}/${command_file}"
 cat "/tmp/mockmaker_${command_file}_func" >> "${MOCKS_DIR}/${command_file}"
-let config_end+=1
+(( config_end++ ))
 tail -n+${config_end} "/tmp/mockmaker_${command_file}_old" >> "${MOCKS_DIR}/${command_file}"
 rm "/tmp/mockmaker_${command_file}_old" "/tmp/mockmaker_${command_file}_func"
 

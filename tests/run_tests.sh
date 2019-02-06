@@ -6,10 +6,9 @@ run_tests () {
     # shellcheck disable=SC2048
     for f in $*; do
         echo "Running ${f} test suite"
-        "./${f}"
-        if [ $? -ne 0 ]; then
+        if ! "./$f"; then
             echo "ERROR: Test failed: ${f}" >&2
-            let outcome_tmp+=1
+            (( outcome_tmp++ ))
         fi
         echo ""
     done
@@ -18,12 +17,13 @@ run_tests () {
 
 outcome=0
 
+rm -rf ./mocks
 run_tests "test_*.sh"
-let outcome+=$?
+(( outcome += $? ))
 
 if [ "$1" != "--skip-shellcheck" ]; then
     run_tests "shellcheck_test_*.sh"
-    let outcome+=$?
+    (( outcome += $? ))
     echo "You can skip shellcheck tests with --skip-shellcheck"
 else
     echo "Skipping shellcheck..."
