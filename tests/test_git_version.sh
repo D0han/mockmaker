@@ -1,6 +1,6 @@
 #!/bin/bash
 
-command="git version"
+command=( "git" "version" )
 
 source ./func.sh
 check_outputs "${command[@]}"

@@ -1,5 +1,7 @@
 #!/bin/bash
 
 cd ..
-shellcheck ./mockmaker
-cd - || exit 64
+shellcheck -x ./mockmaker
+exitcode=$?
+cd "$OLDPWD" || exit 64
+exit $exitcode

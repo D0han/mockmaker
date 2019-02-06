@@ -1,3 +1,3 @@
 #!/bin/bash
 
-shellcheck ./*.sh
+shellcheck -x ./*.sh

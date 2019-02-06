@@ -1,14 +1,14 @@
 #!/bin/bash
 
-command="git version"
-command_check="git aaaaaaaa"
+command=( "git" "version" )
+command_check=( "git" "aaaaaaaa" )
 
 outcome=0
 
-./mockmaker "${command}" > /dev/null 2>&1
+./mockmaker "${command[@]}" > /dev/null 2>&1
 cd mocks || exit 1
-# shellcheck disable=SC2086
-./${command_check} > test_unknown_args_stdout.txt 2> test_unknown_args_stderr.txt
+# shellcheck disable=SC2145
+./"${command_check[@]}" > test_unknown_args_stdout.txt 2> test_unknown_args_stderr.txt
 if [ $? -ne 1 ]; then
     >&2 echo "FAIL: Mock should fail with error code 1"
     (( outcome++ ))

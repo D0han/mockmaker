@@ -1,6 +1,6 @@
 #!/bin/bash
 
-command="git thiswillfail"
+command=( "git" "thiswillfail" )
 
 source ./func.sh
 check_outputs "${command[@]}"

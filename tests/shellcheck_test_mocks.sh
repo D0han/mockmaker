@@ -1,3 +1,3 @@
 #!/bin/bash
 
-shellcheck mocks/*
+shellcheck -x mocks/*

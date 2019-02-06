@@ -1,8 +1,10 @@
 #!/bin/bash
 
-VERSION=2.0
+VERSION=2.1
 
 MOCKS_DIR="mocks"
+
+(( "${BASH_VERSINFO[0]}" >= "4" )) || { echo "Bash >=4 is the only supported shell at the moment"; exit 2; }
 
 # Source .mockmaker file for custom config if it exists
 if [ -e ".mockmaker" ]; then
@@ -43,7 +45,9 @@ MOCKMAKER_VERSION=${VERSION}
 
 #### END OF CONFIG SECTION ####
 
-# For command: ${command_file}
+:<<'FOR_COMMAND'
+$command_file
+FOR_COMMAND
 funame=p_\$(echo -n "\$@" | md5sum | cut -d" " -f1)
 if ! type "\${funame}" > /dev/null 2>&1; then
     >&2 echo "ERROR: \$0 \$* is not mocked"
@@ -52,7 +56,7 @@ fi
 \$funame
 EOF
 else
-    grep "${funame}" "${MOCKS_DIR}/${command_file}" > /dev/null 2>&1
+    grep "function ${funame} {" "${MOCKS_DIR}/${command_file}" > /dev/null 2>&1
     if [ $? -ne 1 ]; then
         >&2 echo "${command} ${args[*]} is mocked already"
         exit 3
