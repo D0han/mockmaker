@@ -71,7 +71,7 @@ function cleanup () {
     echo "${cleaned}"
 }
 
-stdout=$(${command} "${args[@]}" 2> "/tmp/mockmaker_stderr_${funame}_tmp")
+stdout=$("${command}" "${args[@]}" 2> "/tmp/mockmaker_stderr_${funame}_tmp")
 exitcode=$?
 stdout=$(cleanup "$stdout")
 stderr=$(cat "/tmp/mockmaker_stderr_${funame}_tmp")
